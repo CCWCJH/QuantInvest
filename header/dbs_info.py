@@ -41,7 +41,7 @@ def job_stk_managers(ts_code_listStr):
 
 
 def get_stk_managers(first):
-    ts_code_listStr, num = basicFunctions.get_ts_code_listStr()
+    ts_code_listStr, num = basicFunctions.get_ts_code_listStr(create=False)
     strLen = 10
     args = [[ts_code_listStr[num // procNum * i * strLen:num // procNum * (i + 1) * strLen]] for i in range(procNum)]
     args[-1][-1] += ts_code_listStr[num // procNum * procNum * strLen:]
@@ -84,7 +84,7 @@ def job_stk_rewards(ts_code_listStr):
 
 
 def get_stk_rewards(first):
-    ts_code_listStr, num = basicFunctions.get_ts_code_listStr()
+    ts_code_listStr, num = basicFunctions.get_ts_code_listStr(create=False)
     strLen = 10
     args = [[ts_code_listStr[num // procNum * i * strLen:num // procNum * (i + 1) * strLen]] for i in range(procNum)]
     args[-1][-1] += ts_code_listStr[num // procNum * procNum * strLen:]
@@ -383,7 +383,7 @@ def get_basic(first):
         start_dt = '19901219'
     else:
         start_dt = open(basicFunctions.startDt, 'r').read()
-    ts_code_listStr, num = basicFunctions.get_ts_code_listStr()
+    ts_code_listStr, num = basicFunctions.get_ts_code_listStr(create=False)
     ts_code_listStr = ts_code_listStr.replace(".", "_")
     ts_code_list = ts_code_listStr.split(",")
     args = [[start_dt, [ts_code_list[j] for j in range(num // procNum * i, num // procNum * (i + 1))]] for i in
@@ -396,7 +396,7 @@ def get_basic(first):
     for j in range(num // procNum * procNum, num):
         args[-1][-1].append(ts_code_list[j])
     basicFunctions.multiProcessJob(procNum, job_del_null_col, args)
-    print("已获取并插入日线基础数据")
+    print("已获取并插入全部日线基础数据")
 
 
 dbs = {

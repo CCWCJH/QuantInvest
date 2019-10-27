@@ -10,8 +10,9 @@ def createTables(first, db_name, table_names):
     for table_name in table_names:
         if first or table_name in dropTableList:
             sqlFunctions.dropTableSql(db_name, table_name)
-        sqlFunctions.createTableSql(db_name, table_name, tuple(dbs_info.dbs[db_name][table_name]["db_cols"].split(",")),
-                                    dbs_info.dbs[db_name][table_name]["unique_cols"], first)
+            sqlFunctions.createTableSql(db_name, table_name, tuple(dbs_info.dbs[db_name][table_name]["db_cols"].split(",")),
+                                        dbs_info.dbs[db_name][table_name]["unique_cols"], first)
+            print("创建表格" + table_name + "完成")
 
 
 def createStockTable(first, ts_code_list):
@@ -21,7 +22,7 @@ def createStockTable(first, ts_code_list):
         sqlFunctions.createTableSql("stock_daily", ts_code,
                                     tuple(dbs_info.dbs["stock_daily"]["basic"]["db_cols"].split(",")),
                                     dbs_info.dbs["stock_daily"]["basic"]["unique_cols"], first)
-        print(ts_code, "创建表格完成")
+        print("创建表格" + ts_code + "完成")
 
 
 def multiCreateTables():
@@ -38,7 +39,7 @@ def multiCreateTables():
 
 
 def multiCreateStockTable():
-    ts_code_listStr, num = basicFunctions.get_ts_code_listStr()
+    ts_code_listStr, num = basicFunctions.get_ts_code_listStr(create=True)
     ts_code_listStr = ts_code_listStr.replace(".", "_")
     ts_code_list = ts_code_listStr.split(",")
     args = [[basicFunctions.first, [ts_code_list[j] for j in range(num // procNum * i, num // procNum * (i + 1))]] for i in range(procNum)]

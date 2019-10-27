@@ -5,9 +5,11 @@ procNum = basicFunctions.procNum
 
 
 def get_and_insert_basic_data(first, db_name, table_names):
+    dropTableList = dbs_info.dropTableList
     for table_name in table_names:
-        dbs_info.dbs[db_name][table_name]["get_func"](first)
-        # 调试用
+        if first or table_name in dropTableList:
+            dbs_info.dbs[db_name][table_name]["get_func"](first)
+        # 调试时用
         # if table_name == "":
         #     findColMaxMinLen(values_df)
         #     writeDfToFile(values_df, "数据.txt", "a")

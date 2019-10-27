@@ -35,8 +35,7 @@ def init():
     else:
         first = False
         start_dt = open(startDt, 'r').read()
-    with open(startDt, "w") as f:
-        f.write(end_dt)
+
     print("初始化完成")
 
 
@@ -114,7 +113,7 @@ def floatToStr(df, cols, isInt):
     return df
 
 
-def getTsCodeList():
+def getTsCodeList(create):
     """
     获取所有股票代码（列表形式）
     :param :
@@ -127,14 +126,18 @@ def getTsCodeList():
         charset='utf8'
     )
     cursor = db.cursor()
-    cursor.execute("SELECT ts_code FROM stock_basic.stock_company")
-    db.commit()
+    if first:
+        cursor.execute("SELECT ts_code FROM stock_basic.stock_company")
+    elif create:
+        cursor.execute("SELECT ts_code FROM stock_basic.stock_basic_l_or_p WHERE list_date > " + start_dt)
+    else:
+        cursor.execute("SELECT ts_code FROM stock_basic.stock_basic_l_or_p")
     result = cursor.fetchall()
     db.close()
     return result
 
 
-def get_ts_code_listStr():
+def get_ts_code_listStr(create):
     """
     获取所有股票代码（字符串形式）
     :param :
@@ -144,7 +147,7 @@ def get_ts_code_listStr():
     while True:
         lock = open(lockF, 'r').read()
         if not lock == "0":
-            ts_codes = getTsCodeList()
+            ts_codes = getTsCodeList(create)
             break
         time.sleep(1)
     for i in range(len(ts_codes)):
@@ -167,11 +170,14 @@ def get_trade_date_list():
     )
     cursor = db.cursor()
     cursor.execute("SELECT cal_date FROM stock_basic.trade_cal WHERE exchange = \"SSE\" and is_open = \"1\"")
-    db.commit()
     result = cursor.fetchall()
     db.close()
     return result
 
+
+def writeNewestTimeToFile():
+    with open(startDt, "w") as f:
+        f.write(datetime.datetime.now().strftime('%Y%m%d'))
 
 def multiProcessJob(n, job, args):
     """

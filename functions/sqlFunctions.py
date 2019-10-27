@@ -111,7 +111,6 @@ def insertSql(db_name, values_df, table_name, cols_tup):
             db.rollback()
     while True:
         cursor.execute("SELECT COUNT(*) FROM " + db_name + "." + table_name)
-        db.commit()
         fetch = cursor.fetchone()
         if fetch:
             result = fetch[0]
